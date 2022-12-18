@@ -2,3 +2,4 @@ Create ai
 train it
 deploy it as a container
 optimitation of ressources/data inputs
+debug auto and manual
