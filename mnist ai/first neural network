@@ -1,0 +1,71 @@
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+from keras.datasets import mnist
+import sigmoid
+(train_X, train_y), (test_X, test_y) = mnist.load_data()
+
+'''
+print('X_train: ' + str(train_X.shape))
+print('Y_train: ' + str(train_y.shape))
+print('X_test:  '  + str(test_X.shape))
+print('Y_test:  '  + str(test_y.shape))
+'''
+m, n = [i.shape for i in (train_X, train_y)]
+print(m,n)
+network_depth=int(input("How many layers ?"))
+
+def init_params():
+    W1 = np.random.rand(10, 784)
+    b1 = np.random.rand(10, 1)
+    W2 = np.random.rand(10, 10)
+    b2 = np.random.rand(10, 1)
+    return W1, b1, W2, b2
+print([len(i[0]) for i in (init_params())])
+for i in range (100):
+     print(np.random.rand(10, 10))
+     print(np.random.randn(20,10) * 0.01)
+def activation(Z):
+    return sigmoid.sigmoid(Z)
+def deriv_activation(Z):
+    return sigmoid.deriv_sigmoid(Z)
+
+#/workspaces/codespaces-jupyter/activation functions/softmax.py
+
+def forward_prop(W1, b1, X):
+    X1 = activation(W1.dot(X) + b1)
+    return X1
+def test(Y):
+    one_hot_Y = np.zeros((Y.size, Y.max() + 1))
+    one_hot_Y[np.arange(Y.size), Y] = 1
+    one_hot_Y = one_hot_Y.T
+    return one_hot_Y
+def backward_prop(alpha, W1, b1, Y):
+    one_hot_Y = test(Y)
+    
+    W2 = W1 - alpha*(Y*deriv_activation(W1*Y+b1)*(Y-one_hot_Y))
+    b2 = b1 - alpha*(deriv_activation(W1*Y+b1)*(Y-one_hot_Y))
+    
+    return W2, b2
+
+
+def get_predictions(A2):
+    return np.argmax(A2, 0)
+
+def get_accuracy(predictions, Y):
+    print(predictions, Y)
+    return np.sum(predictions == Y) / Y.size
+
+
+def training(X, Y, alpha, iterations):
+    W1, b1, W2, b2 = init_params()
+    for i in range(iterations):
+        for n in range(network_depth):
+            X1 = forward_prop(W1, b1, X)
+        for n in range(network_depth):
+            W1, b1 = backward_prop(alpha, W1, b1, Y)
+        if i % 10 == 0:
+            print("Iteration: ", i)
+            predictions = get_predictions(A2)
+            print(get_accuracy(predictions, Y))
+    return W1, b1, W2, b2
