@@ -1,10 +1,12 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+print("error")
 from keras.datasets import mnist
 import sigmoid
 (train_X, train_y), (test_X, test_y) = mnist.load_data()
-
+print((train_X, train_y))
+print((test_X, test_y))
 '''
 print('X_train: ' + str(train_X.shape))
 print('Y_train: ' + str(train_y.shape))
@@ -15,16 +17,16 @@ m, n = [i.shape for i in (train_X, train_y)]
 print(m,n)
 network_depth=int(input("How many layers ?"))
 
-def init_params():
-    W1 = np.random.rand(10, 784)
-    b1 = np.random.rand(10, 1)
-    W2 = np.random.rand(10, 10)
-    b2 = np.random.rand(10, 1)
-    return W1, b1, W2, b2
-print([len(i[0]) for i in (init_params())])
+def init_params(width_l1,width_l2):
+    W1 = np.random.rand(width_l2, width_l1)
+    b1 = np.random.rand(width_l2, 1)   
+    return W1, b1
+'''
+print([len(i[0]) for i in (init_params(28**2,10))])
 for i in range (100):
      print(np.random.rand(10, 10))
-     print(np.random.randn(20,10) * 0.01)
+     print(np.random.randn(20,10) * 0.01) '''
+
 def activation(Z):
     return sigmoid.sigmoid(Z)
 def deriv_activation(Z):
@@ -57,8 +59,8 @@ def get_accuracy(predictions, Y):
     return np.sum(predictions == Y) / Y.size
 
 
-def training(X, Y, alpha, iterations):
-    W1, b1, W2, b2 = init_params()
+def training(alpha, iterations):
+    W1, b1 = init_params(28**2,100)
     for i in range(iterations):
         for n in range(network_depth):
             X1 = forward_prop(W1, b1, X)
@@ -68,4 +70,4 @@ def training(X, Y, alpha, iterations):
             print("Iteration: ", i)
             predictions = get_predictions(A2)
             print(get_accuracy(predictions, Y))
-    return W1, b1, W2, b2
+    return W1, b1
